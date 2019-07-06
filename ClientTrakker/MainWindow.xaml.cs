@@ -19,7 +19,7 @@ using System.Data;
 namespace ClientTrakker
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// An application used to track clients
     /// </summary>
     public partial class MainWindow : Window
     {
