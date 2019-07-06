@@ -1,0 +1,69 @@
+﻿<Window x:Class="ClientTrakker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClientTrakker"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+
+        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TabItem Header="Clients">
+                <Grid Background="#FFE5E5E5">
+                    <ListBox Name="lstClients"  HorizontalAlignment="Left" Height="293" Margin="12,47,0,0" VerticalAlignment="Top" Width="397" SelectionChanged="ListAllClients_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="ClientFirstName" />
+                                            <Binding Path="ClientLastName" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Label Content="Clients" HorizontalAlignment="Left" Margin="12,17,0,0" VerticalAlignment="Top" FontSize="15" FontWeight="Bold" Height="30" Width="58"/>
+                    <GroupBox Header="Client Information" HorizontalAlignment="Left" Height="321" Margin="425,47,0,0" VerticalAlignment="Top" Width="339">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="29*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="First Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="67" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientFirstName" HorizontalAlignment="Left" Margin="72,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Last Name" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="66" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientLastName" HorizontalAlignment="Left" Margin="72,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Phone" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="44" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientPhone" HorizontalAlignment="Left" Margin="72,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Email" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="38" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientEmail" HorizontalAlignment="Left" Margin="72,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Address" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="53" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientAddress" HorizontalAlignment="Left" Margin="72,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="City" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="53" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientCity" HorizontalAlignment="Left" Margin="72,169,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Province" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="66" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientProvince" HorizontalAlignment="Left" Margin="72,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Label Content="Country" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.561,-0.192" Height="26" Width="66" Grid.ColumnSpan="2"/>
+                            <TextBox Name="txtClientCountry" HorizontalAlignment="Left" Margin="72,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Padding="0" Height="18" Grid.Column="1"/>
+                            <Button Name="btnAddClient" Click="AddClient_Click" Content="Add New Client" HorizontalAlignment="Left" Margin="204,-38,0,0" VerticalAlignment="Top" Width="101" Grid.Column="1"/>
+                            <Button Name="btnEditClient" Click="UpdateClient_Click" Content="Update" HorizontalAlignment="Left" Margin="75,266,0,0" VerticalAlignment="Top" Width="134" Grid.Column="1"/>
+                            <Button Name="btnDeleteClient" Content="Delete" HorizontalAlignment="Left" Margin="229,266,0,0" VerticalAlignment="Top" Width="56" RenderTransformOrigin="1.196,0.5" Grid.Column="1" Click="deleteClientAccount"/>
+                        </Grid>
+                    </GroupBox>
+                    <Button Name="ClearClientSelection" Click="ClearClientSelection_Click" Content="Clear Selection" HorizontalAlignment="Left" Margin="12,348,0,0" VerticalAlignment="Top" Width="103"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
