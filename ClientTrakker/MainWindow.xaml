@@ -60,8 +60,38 @@
                     <Button Name="ClearClientSelection" Click="ClearClientSelection_Click" Content="Clear Selection" HorizontalAlignment="Left" Margin="12,348,0,0" VerticalAlignment="Top" Width="103"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
+            <TabItem Header="Reminders">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="9*"/>
+                        <ColumnDefinition Width="762*"/>
+                    </Grid.ColumnDefinitions>
+                    <DatePicker Name="ReminderDate" Grid.Column="3" HorizontalAlignment="Left" Margin="562,14,0,0" VerticalAlignment="Top" Width="163"/>
+                    <TextBox Name="txtReminderTitle" Grid.Column="3" HorizontalAlignment="Left" Margin="562,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163" FontWeight="Bold"/>
+                    <Label Content="Title" Grid.Column="3" HorizontalAlignment="Left" Margin="525,39,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="txtReminderDetails"  Grid.Column="3" HorizontalAlignment="Left" Height="146" Margin="562,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163"/>
+                    <Label Content="Details" Grid.Column="3" HorizontalAlignment="Left" Margin="511,62,0,0" VerticalAlignment="Top"/>
+                    <Button Content="Add Reminder" Name="AddReminder" Grid.Column="3" HorizontalAlignment="Left" Margin="562,217,0,0" VerticalAlignment="Top" Width="163" Click="AddReminder_Click"/>
+                    <ListBox Name="lstReminders" Grid.Column="2" HorizontalAlignment="Left" Height="324" Margin="2,14,0,0" VerticalAlignment="Top" Width="216" Grid.ColumnSpan="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} - {1}">
+                                            <Binding Path="ReminderDate" />
+                                            <Binding Path="ReminderTitle" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+
+
+                </Grid>
             </TabItem>
         </TabControl>
 

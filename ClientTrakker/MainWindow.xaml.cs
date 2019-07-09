@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
 using System.Data;
+using System.Globalization;
 
 namespace ClientTrakker
 {
@@ -33,13 +34,15 @@ namespace ClientTrakker
 
             sqlConnection = new SqlConnection(connectionString);
             ShowAllClients();
+            ShowButtons();
+            ShowAllReminders();
         }
 
         private void ShowAllClients()
         {
             try
             {
-                string query = "select * from Client";
+                string query = "select * from Client order by ClientFirstName asc";
                 SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(query, sqlConnection);
                 using (sqlDataAdapter)
                 {
@@ -49,9 +52,13 @@ namespace ClientTrakker
                     lstClients.ItemsSource = AllClientsTable.DefaultView;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // add exception
+                throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
         }
 
@@ -76,10 +83,15 @@ namespace ClientTrakker
                     txtClientProvince.Text = ClientDataTable.Rows[0]["ClientProvince"].ToString();
                     txtClientCountry.Text = ClientDataTable.Rows[0]["ClientCountry"].ToString();
                 }
+                ClearClientSelection.IsEnabled = true;
             }
             catch (Exception)
             {
-              //  MessageBox.Show(ToString());
+                //throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
         }
 
@@ -159,6 +171,7 @@ namespace ClientTrakker
             txtClientCity.Text = String.Empty;
             txtClientProvince.Text = String.Empty;
             txtClientCountry.Text = String.Empty;
+            ClearClientSelection.IsEnabled = false;
         }
 
         private void ClearClientSelection_Click(object sender, RoutedEventArgs e)
@@ -169,19 +182,78 @@ namespace ClientTrakker
 
         private void AddClient_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if( // first name
+                Validator.IsNotEmpty(txtClientFirstName, "First name") &&
+                Validator.IsLetters(txtClientFirstName, "first name") &&
+                // last name
+                Validator.IsNotEmpty(txtClientLastName, "Last name") &&
+                Validator.IsLetters(txtClientLastName, "last name") &&
+                // client phone
+                Validator.IsNotEmpty(txtClientPhone, "Phone number") &&
+                Validator.IsPhoneNumber(txtClientPhone, "phone number") &&
+                // client email
+                Validator.IsNotEmpty(txtClientEmail, "Email") &&
+                Validator.IsEmail(txtClientEmail, "Email") &&
+                // client address
+                Validator.IsAddress(txtClientAddress, "address") &&
+                // client city
+                Validator.IsLettersAndSpaces(txtClientCity, "city") &&
+                // client province
+                Validator.IsLettersAndSpaces(txtClientProvince, "province") &&
+                // client country
+                Validator.IsLettersAndSpaces(txtClientCountry, "country"))
             {
-                string query = @"insert into Client values (@ClientFirstName, @ClientLastName, @ClientPhone, @ClientEmail, @ClientAddress, @ClientCity, @ClientProvince, @ClientCountry)";
+                try
+                {
+                    string query = @"insert into Client values (@ClientFirstName, @ClientLastName, @ClientPhone, @ClientEmail, @ClientAddress, @ClientCity, @ClientProvince, @ClientCountry)";
+                    SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                    sqlConnection.Open();
+                    sqlCommand.Parameters.AddWithValue("@ClientFirstName", Validator.ToTitleCase(txtClientFirstName.Text));
+                    sqlCommand.Parameters.AddWithValue("@ClientLastName", Validator.ToTitleCase(txtClientLastName.Text));
+                    sqlCommand.Parameters.AddWithValue("@ClientPhone", txtClientPhone.Text);
+                    sqlCommand.Parameters.AddWithValue("@ClientEmail", txtClientEmail.Text);
+                    sqlCommand.Parameters.AddWithValue("@ClientAddress", Validator.ToTitleCase(txtClientAddress.Text));
+                    sqlCommand.Parameters.AddWithValue("@ClientCity", Validator.ToTitleCase(txtClientCity.Text));
+                    sqlCommand.Parameters.AddWithValue("@ClientProvince", Validator.ToTitleCase(txtClientProvince.Text));
+                    sqlCommand.Parameters.AddWithValue("@ClientCountry", Validator.ToTitleCase(txtClientCountry.Text));
+                    sqlCommand.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                finally
+                {
+                    sqlConnection.Close();
+                    ShowAllClients();
+                    ClearClientData();
+                }
+            }
+        }
+
+        private void ShowButtons()
+        {            
+            if(lstClients.SelectedIndex >= 0)
+            {
+                ClearClientSelection.IsEnabled = true;
+            }
+            else
+            {
+                ClearClientSelection.IsEnabled = false;
+            }
+        }
+
+        private void AddReminder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {         
+                string query = @"insert into Reminder (ReminderTitle, ReminderDetails, ReminderDate, DateAdded) values (@ReminderTitle, @ReminderDetails, @ReminderDate, @DateAdded)";
                 SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
                 sqlConnection.Open();
-                sqlCommand.Parameters.AddWithValue("@ClientFirstName", txtClientFirstName.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientLastName", txtClientLastName.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientPhone", txtClientPhone.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientEmail", txtClientEmail.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientAddress", txtClientAddress.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientCity", txtClientCity.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientProvince", txtClientProvince.Text);
-                sqlCommand.Parameters.AddWithValue("@ClientCountry", txtClientCountry.Text);
+                sqlCommand.Parameters.AddWithValue("@ReminderTitle", Validator.ToTitleCase(txtReminderTitle.Text));
+                sqlCommand.Parameters.AddWithValue("@ReminderDetails", txtReminderDetails.Text);
+                sqlCommand.Parameters.AddWithValue("@ReminderDate", ReminderDate.SelectedDate);
+                sqlCommand.Parameters.AddWithValue("@DateAdded", DateTime.Now);
                 sqlCommand.ExecuteScalar();
             }
             catch (Exception ex)
@@ -191,10 +263,34 @@ namespace ClientTrakker
             finally
             {
                 sqlConnection.Close();
-                ShowAllClients();
-                ClearClientData();
+                txtReminderTitle.Text = "";
+                txtReminderDetails.Text = "";
+                ReminderDate.Text = "";
             }
         }
 
+        private void ShowAllReminders()
+        {
+            try
+            {
+                string query = "select * from Reminder order by ReminderDate asc";
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(query, sqlConnection);
+                using (sqlDataAdapter)
+                {
+                    DataTable AllRemindersTable = new DataTable();
+                    sqlDataAdapter.Fill(AllRemindersTable);
+                    lstReminders.SelectedValuePath = "Id";
+                    lstReminders.ItemsSource = AllRemindersTable.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
     }
 }
